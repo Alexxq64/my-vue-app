@@ -6,6 +6,7 @@ import router from './router'
 
 import { createPinia } from 'pinia'
 import { useUserStore } from './store/user'
+import './assets/tailwind.css'
 
 const app = createApp(App)
 const pinia = createPinia()

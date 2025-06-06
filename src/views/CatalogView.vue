@@ -1,47 +1,55 @@
 <template>
-  <div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">Каталог товаров</h1>
+  <div class="p-6 max-w-7xl mx-auto">
+    <h1 class="text-2xl font-bold mb-6">Каталог товаров</h1>
 
-    <!-- Категории -->
-    <div class="mb-4">
+    <!-- Фильтр категорий -->
+    <div class="mb-6">
       <h2 class="font-medium mb-2">Фильтр по категории:</h2>
-      <CategoryList
-        :categories="categories"
-        :selected-category-id="selectedCategory"
-        @select="handleCategorySelect"
-      />
-    </div>
-
-    <!-- Продукты -->
-    <div v-if="products.length === 0">
-      Загрузка товаров...
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      <div
-        v-for="product in products"
-        :key="product.id"
-        class="border rounded-lg p-4 shadow hover:shadow-md transition"
-      >
-        <h2 class="font-semibold text-lg">{{ product.name }}</h2>
-        <p class="text-gray-600 text-sm mb-2">{{ product.description }}</p>
-        <p class="text-green-700 font-bold">{{ product.price }} ₽</p>
+      <div class="flex flex-wrap gap-3">
         <button
-          v-if="userStore.role === 'buyer'"
-          @click="addToCart(product)"
-          class="mt-2 bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+          v-for="cat in categories"
+          :key="cat.id"
+          @click="handleCategorySelect(cat.id)"
+          :class="[
+            'px-4 py-1 rounded-full text-sm transition',
+            selectedCategory === cat.id ? 'bg-black text-white' : 'bg-gray-200 hover:bg-gray-300'
+          ]"
         >
-          Добавить в корзину
+          {{ cat.name }}
         </button>
       </div>
     </div>
+
+    <!-- Товары -->
+    <div v-if="products.length === 0" class="text-center text-gray-500 mt-8">
+      Загрузка товаров...
+    </div>
+
+<div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  <div
+    v-for="product in products"
+    :key="product.id"
+    class="rounded-lg p-4 shadow hover:shadow-md transition bg-white"
+  >
+    <h2 class="font-semibold text-lg mb-1">{{ product.name }}</h2>
+    <p class="text-gray-600 text-sm mb-2">{{ product.description }}</p>
+    <p class="text-green-700 font-bold mb-3">{{ product.price }} ₽</p>
+    <button
+      v-if="userStore.role === 'buyer'"
+      @click="addToCart(product)"
+      class="w-full bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+    >
+      Добавить в корзину
+    </button>
+  </div>
+</div>
+
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import api from '../utils/axiosInstance'
-import CategoryList from '../components/catalog/CategoryList.vue'
 import { useUserStore } from '../store/user'
 
 const userStore = useUserStore()
@@ -56,7 +64,6 @@ const fetchProducts = async () => {
       ? `products/?category=${selectedCategory.value}`
       : 'products/'
     const response = await api.get(url)
-    console.log('Ответ API:', response.data)
     products.value = response.data
   } catch (error) {
     console.error('Ошибка при загрузке товаров:', error.response?.data || error.message)
@@ -75,9 +82,8 @@ const fetchCategories = async () => {
 
 // Обработка выбора категории
 const handleCategorySelect = async (categoryId) => {
-  console.log('Выбрана категория:', categoryId)
   selectedCategory.value = categoryId
-  products.value = [] // Сбрасываем товары перед загрузкой
+  products.value = []
   await fetchProducts()
 }
 
@@ -90,10 +96,9 @@ onMounted(async () => {
 // Добавление в корзину
 const addToCart = async (product) => {
   try {
-    const response = await api.post('cart/add/', { product_id: product.id })
-    console.log('Ответ API добавления в корзину:', response.data)
+    await api.post('cart/add/', { product_id: product.id })
   } catch (error) {
-    console.error('Ошибка API добавления в корзину:', error.response?.data || error.message)
+    console.error('Ошибка при добавлении в корзину:', error.response?.data || error.message)
   }
 }
 </script>

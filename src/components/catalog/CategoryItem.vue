@@ -1,6 +1,6 @@
 <template>
-  <div class="ml-4 mt-1">
-    <!-- Кнопка категории -->
+  <div>
+    <p style="color: red; font-weight: bold;">CategoryItem: {{ category.name }}</p>
     <button
       @click="handleClick"
       :class="['px-3 py-1 rounded font-medium', isSelected ? 'bg-black text-white' : 'hover:bg-gray-200']"
@@ -8,10 +8,9 @@
       {{ category.name }}
     </button>
 
-    <!-- Подкатегории -->
-    <div v-if="category.children && category.children.length > 0">
+    <div v-if="category.subcategories && category.subcategories.length > 0" class="ml-4 mt-1">
       <CategoryItem
-        v-for="child in category.children"
+        v-for="child in category.subcategories"
         :key="child.id"
         :category="child"
         :selected-category-id="selectedCategoryId"
@@ -22,7 +21,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits, computed } from 'vue'
 import CategoryItem from './CategoryItem.vue'
 
 const props = defineProps({
@@ -32,7 +31,7 @@ const props = defineProps({
 
 const emit = defineEmits(['select'])
 
-const isSelected = props.selectedCategoryId === props.category.id
+const isSelected = computed(() => props.selectedCategoryId === props.category.id)
 
 function handleClick() {
   emit('select', props.category.id)
@@ -41,4 +40,7 @@ function handleClick() {
 function emitSelect(id) {
   emit('select', id)
 }
+
+console.log('CategoryItem category:', props.category)
+console.log('CategoryItem subcategories:', props.category.subcategories)
 </script>

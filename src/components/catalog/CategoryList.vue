@@ -2,7 +2,7 @@
   <div>
     <!-- Кнопка "Назад" -->
     <button
-      v-if="history.length > 0"
+      v-show="history.length > 0"
       class="mb-2 text-blue-500 hover:underline"
       @click="goBack"
     >
@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch } from 'vue'
 
 const props = defineProps({
   categories: Array,
@@ -38,32 +38,33 @@ watch(
   () => props.categories,
   (newVal) => {
     currentCategories.value = newVal
-    history.value = [] // сброс при новом списке
+    history.value = [] // сброс истории при новом списке категорий
   },
   { immediate: true }
 )
 
 function handleClick(category) {
-  if (category.subcategories && category.subcategories.length > 0) {
+  console.log('Clicked category:', category.id, category)
+  emit('select', category.id)
+
+  if (category.subcategories) {
     history.value.push(currentCategories.value)
-    currentCategories.value = category.subcategories
-  } else {
-    emit('select', category.id)
+    currentCategories.value = category.subcategories || []
+    console.log('Переход в подкатегории:', currentCategories.value)
   }
 }
 
 function goBack() {
   if (history.value.length > 0) {
     currentCategories.value = history.value.pop()
+    console.log('Возврат в категории:', currentCategories.value)
 
-    // Уведомим родителя о новой (родительской) категории — если известна
-    const parentCategory = currentCategories.value[0]?.parent
-    if (parentCategory) {
-      emit('select', parentCategory)
+    const parentId = currentCategories.value[0]?.parent
+    if (parentId !== null && parentId !== undefined) {
+      emit('select', parentId)
     } else {
-      emit('select', '') // корневая категория
+      emit('select', '') // если родителя нет — снимаем фильтр
     }
   }
 }
-
 </script>

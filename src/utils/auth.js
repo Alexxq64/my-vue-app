@@ -11,3 +11,7 @@ export function clearAuthData() {
   localStorage.removeItem('username')
   localStorage.removeItem('role')
 }
+
+export function getAuthToken() {
+  return localStorage.getItem('token')
+}

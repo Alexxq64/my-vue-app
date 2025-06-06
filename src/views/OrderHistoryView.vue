@@ -6,16 +6,18 @@
       <div v-if="orders.length === 0">Заказов нет</div>
       <div v-for="order in orders" :key="order.id" class="order">
         <h3>Заказ #{{ order.id }} — {{ formatDate(order.created_at) }}</h3>
-        <p>Итого: {{ order.total_price }} ₽</p>
+        <p>Итого: {{ order.total }} ₽</p> <!-- вместо total_price -->
+
         <ul>
-          <li v-for="item in order.items" :key="item.product.id">
-            {{ item.product.name }} — {{ item.quantity }} шт. — {{ item.price }} ₽
+          <li v-for="item in order.items" :key="item.product">
+            {{ item.product_name }} — {{ item.quantity }} шт. — {{ item.product_price }} ₽
           </li>
         </ul>
       </div>
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from 'vue'

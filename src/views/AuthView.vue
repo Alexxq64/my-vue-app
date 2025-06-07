@@ -17,6 +17,7 @@ import { ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../store/user'
+import { saveAuthData } from '../utils/auth'
 
 const username = ref('')
 const password = ref('')
@@ -32,6 +33,7 @@ async function login() {
     })
 
     const { token, username: user, role } = response.data
+    saveAuthData(token, user, role)
     userStore.login(token, user, role)
 
     if (role === 'buyer') {

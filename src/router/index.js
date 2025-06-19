@@ -6,6 +6,7 @@ import CartView from '../views/CartView.vue'
 import OrderHistoryView from '../views/OrderHistoryView.vue'
 import SellerCabinet from '../views/SellerCabinet.vue'
 import AuthView from '../views/AuthView.vue'
+import RegisterView from '../views/RegisterView.vue'
 
 const routes = [
   { path: '/', name: 'Catalog', component: CatalogView },
@@ -14,6 +15,7 @@ const routes = [
   { path: '/orders', name: 'OrderHistory', component: OrderHistoryView },
   { path: '/seller', name: 'SellerCabinet', component: SellerCabinet },
   { path: '/auth', name: 'Auth', component: AuthView },
+  { path: '/register', name: 'Register', component: RegisterView },
 ]
 
 const router = createRouter({

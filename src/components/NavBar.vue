@@ -17,7 +17,11 @@
       </li>
 
       <li v-if="!role">
-        <router-link to="/auth" class="text-gray-700 hover:text-indigo-600">Вход / Регистрация</router-link>
+        <router-link to="/auth" class="text-gray-700 hover:text-indigo-600">Вход</router-link>
+      </li>
+      
+      <li v-if="!role">
+        <router-link to="/register" class="text-gray-700 hover:text-indigo-600">Регистрация</router-link>
       </li>
 
       <li v-if="role">

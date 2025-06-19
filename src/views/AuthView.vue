@@ -40,7 +40,9 @@ async function login() {
       router.push('/')
     } else if (role === 'seller') {
       router.push('/seller')
-    } else {
+    } else if (role === 'admin') {
+      window.location.href = 'http://127.0.0.1:8000/admin/'    }
+     else {
       router.push('/')
     }
   } catch (err) {
